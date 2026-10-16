@@ -1,0 +1,7 @@
+(a) I used a set for seen_ids because sets do not keep duplicates. I used a dict for lookup because I wanted to get the whole case by its ID with just 1 step (like lookup["TC-107"]).
+
+(b) If lookup was a list I would have to for loop through every single case to find the one I want. This is okay if the amount of cases is small but in a scenario where there is A LOT of cases, it would be slow. Dict on the other hand lets me lookup instantly (O(1)).
+
+(c) The feature branch kept main clean while I was working. All my commits for Parts 1 to 5 went on the feature branch, so main stayed on the working starter version and did not have my unfinished code on it. I only merged once everything passed.
+
+(d) When I did the status counts I forgot that TC-110 has no status key at all, so case["status"] crashed with a KeyError. I switched it to case.get("status", "unknown") so it gives back "unknown" instead of crashing.

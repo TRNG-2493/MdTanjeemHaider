@@ -1,0 +1,12 @@
+PS C:\Users\Md Tanjeem Haider\Desktop\test-data-manager> git log --oneline --graph --all 
+*   3100b05 (HEAD -> main) Merge branch 'feature/test-data-manager'
+|\  
+| * 3120dbe Mark status done in PROJECT_NOTES
+| * 1409097 Add status counts and planned-vs-executed check
+| * 6e3d346 Add lookup by test ID with dict.get
+| * 4e99d02 Add grouping by module with defaultdict
+| * a77b148 Add duplicate removal with a set
+| * e45a095 Add raw ID list and slicing preview
+* | c4b6081 Document how to run (parallel work on main)
+|/  
+* 7227ec6 Initial commit: starter files
