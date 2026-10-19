@@ -1,0 +1,42 @@
+classDiagram
+    class TestResult {
+        +str test_id
+        -str status
+        +bool is_passed
+        -float duration
+        -str message
+        
+        +from_csv_line(line)
+        +import_from(filetype, path)
+    }
+
+    class Suite {
+        +str name
+        +list results
+        +float pass_rate
+        +float total_duration
+        
+        +add(result)
+        +remove(id)
+        +slowest()
+        +fails()
+    }
+
+    class Reporter {
+        -Suite _suite
+        +report()
+    }
+
+    class TextReporter {
+        +str file_path
+    }
+
+    class CsvReporter {
+        +str file_path
+    }
+
+    Reporter <|-- TextReporter : is-a
+    Reporter <|-- CsvReporter : is-a
+
+    Suite "1" o-- "0..*" TestResult : has-many
+    Reporter "1" --> "1" Suite : has-one
