@@ -15,84 +15,149 @@ class TestResult:
     def __init__(self, test_id, status, duration=0.0, message=""):
         # TODO 1.1: validate test_id with TestResult.is_valid_id (ValueError if bad)
         #           and store it in self._test_id
+        if not TestResult.is_valid_id(test_id):
+            raise ValueError
+        self._test_id = test_id
         # TODO 1.2: set self.status and self.duration THROUGH the properties below,
         #           so validation runs. Store message as a plain attribute.
+        self.status = status
+        self.duration = duration
+        self.message = message
         # TODO 1.3: increase TestResult.total_created ONLY after everything above
         #           succeeded (an object that fails validation must not be counted)
-        raise NotImplementedError("TODO 1.1-1.3: write __init__")
+        TestResult.total_created += 1
 
     # ---- static helper ----------------------------------------------------
     @staticmethod
     def is_valid_id(test_id):
         """True for text like 'TC-001': 'TC-' followed by one or more digits."""
         # TODO 1.4: return True/False. Never raise, even for None or numbers.
-        raise NotImplementedError("TODO 1.4: write is_valid_id")
+        if not type(test_id) == str:
+            return False
+
+        if not test_id.startswith("TC-"):
+            return False
+
+        if not test_id[3:].isdigit():
+            return False
+
+        return True
 
     # ---- encapsulated attributes -------------------------------------------
     @property
     def test_id(self):
         # TODO 1.5: return the stored id. Read-only: do NOT write a setter.
-        raise NotImplementedError("TODO 1.5: test_id getter")
+        return self._test_id
 
     @property
     def status(self):
         # TODO 1.6: return the stored status
-        raise NotImplementedError("TODO 1.6: status getter")
+        return self._status
 
     @status.setter
     def status(self, value):
         # TODO 1.6: must be text; strip and upper-case it; it must be in
         #           VALID_STATUSES, otherwise raise ValueError (include the bad
         #           value in the message). Only then store it in self._status.
-        raise NotImplementedError("TODO 1.6: status setter")
+        if not isinstance(value, str):
+            raise ValueError(value)
+        
+        value = value.strip().upper()
+
+        if value not in self.VALID_STATUSES:
+            raise ValueError(value)
+
+        self._status = value
+        
 
     @property
     def duration(self):
         # TODO 1.7: return the stored duration
-        raise NotImplementedError("TODO 1.7: duration getter")
+        return self._duration
 
     @duration.setter
     def duration(self, value):
         # TODO 1.7: not int/float (or a bool) -> TypeError; negative -> ValueError;
         #           otherwise store float(value) in self._duration
-        raise NotImplementedError("TODO 1.7: duration setter")
+        if not isinstance(value, (int, float)):
+            raise TypeError
+        if type(value) == bool:
+            raise TypeError
+
+        if value < 0:
+            raise ValueError
+
+        self._duration = float(value)
 
     @property
     def is_passed(self):
         # TODO 1.8: True only when the status is "PASS". Read-only.
-        raise NotImplementedError("TODO 1.8: is_passed")
+        if self.status == "PASS":
+            return True
+        else:
+            return False
 
     # ---- class methods ------------------------------------------------------
     @classmethod
     def how_many(cls):
         # TODO 1.9: return the class-level counter
-        raise NotImplementedError("TODO 1.9: how_many")
+        return cls.total_created
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data:dict):
         # TODO 1.10: keys "test_id" and "status" are required (ValueError naming the
         #            missing key); "duration" (default 0.0) and "message"
         #            (default "") are optional. Build the object with cls(...),
         #            NOT TestResult(...).
-        raise NotImplementedError("TODO 1.10: from_dict")
+        if "test_id" not in data:
+            raise ValueError("missing key: test_id")
+        if "status" not in data:
+            raise ValueError("missing key: status")
+
+        return cls(
+            data.get("test_id"),
+            data.get("status"),
+            data.get("duration",0.0),
+            data.get("message", "")
+        )
 
     @classmethod
-    def from_csv_line(cls, line):
+    def from_csv_line(cls, line:str):
         # TODO 1.11: "TC-001,PASS,1.2,Timeout after 30s" -> TestResult.
         #            Only the first two fields are required. The message may
         #            itself contain commas (hint: split with a limit).
         #            Strip spaces around each field. Too few fields -> ValueError.
-        raise NotImplementedError("TODO 1.11: from_csv_line")
+        data = line.split(",",3)
+
+        if len(data) < 2:
+            raise ValueError
+
+        if len(data) > 3 :
+            duration = float(data[2].strip())
+        else:
+            duration = 0.0
+
+        if len(data) == 4:
+            message = data[3].strip()
+        else:
+            message = ""
+
+        return cls(data[0],data[1],duration,message)
+
+
 
     # ---- text forms ----------------------------------------------------------
     def __str__(self):
         # TODO 1.12: "TC-001 PASS 1.2s"  (add " - <message>" only if there is one)
-        raise NotImplementedError("TODO 1.12: __str__")
+        base = f"{self._test_id} {self._status} {self._duration}s"
+        if self.message:
+            base += f" - {self.message}"
+        return base
 
     def __repr__(self):
         # TODO 1.12: "TestResult('TC-001', 'PASS', 1.2)"; use the REAL class name
         #            via type(self).__name__ so subclasses print correctly
-        raise NotImplementedError("TODO 1.12: __repr__")
+        
 
 
 class Suite:
