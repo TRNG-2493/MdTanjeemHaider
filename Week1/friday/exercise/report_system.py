@@ -159,7 +159,7 @@ class TestResult:
         #            via type(self).__name__ so subclasses print correctly
         class_name = type(self).__name__
 
-        return f"{class_name}({self.test_id})"
+        return f"{class_name}('{self.test_id}', '{self.status}', {self.duration})"
 
         
 
