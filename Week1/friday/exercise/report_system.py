@@ -59,7 +59,7 @@ class TestResult:
         # TODO 1.6: must be text; strip and upper-case it; it must be in
         #           VALID_STATUSES, otherwise raise ValueError (include the bad
         #           value in the message). Only then store it in self._status.
-        if not isinstance(value, str):
+        if not type(value) == str:
             raise ValueError(value)
         
         value = value.strip().upper()
@@ -79,7 +79,7 @@ class TestResult:
     def duration(self, value):
         # TODO 1.7: not int/float (or a bool) -> TypeError; negative -> ValueError;
         #           otherwise store float(value) in self._duration
-        if not isinstance(value, (int, float)):
+        if not (type(value) == int or type(value) == float):
             raise TypeError
         if type(value) == bool:
             raise TypeError
@@ -157,6 +157,10 @@ class TestResult:
     def __repr__(self):
         # TODO 1.12: "TestResult('TC-001', 'PASS', 1.2)"; use the REAL class name
         #            via type(self).__name__ so subclasses print correctly
+        class_name = type(self).__name__
+
+        return f"{class_name}({self.test_id})"
+
         
 
 
