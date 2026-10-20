@@ -1,42 +1,59 @@
 classDiagram
+    direction LR
+
     class TestResult {
-        +str test_id
-        -str status
-        +bool is_passed
-        -float duration
-        -str message
-        
-        +from_csv_line(line)
-        +import_from(filetype, path)
+        +VALID_STATUSES$
+        +total_created$
+        -_test_id
+        -_status
+        -_duration
+        +message
+        +test_id
+        +status
+        +duration
+        +is_passed
+        +is_valid_id(test_id)$
+        +how_many()$
+        +from_dict(data)$
+        +from_csv_line(line)$
+        +__str__()
+        +__repr__()
     }
 
     class Suite {
-        +str name
-        +list results
-        +float pass_rate
-        +float total_duration
-        
+        +name
+        -_results
+        +results
+        +pass_rate
+        +total_duration
+        +from_rows(name, rows)$
         +add(result)
-        +remove(id)
-        +slowest()
-        +fails()
+        +count()
+        +counts_by_status()
+        +failures()
+        +slowest(n)
     }
 
     class Reporter {
-        -Suite _suite
-        +report()
+        +suite
+        +pad(text, width)$
+        +format_percent(value)$
+        +render()
+        +line_count()
     }
 
     class TextReporter {
-        +str file_path
+        +render()
     }
 
     class CsvReporter {
-        +str file_path
+        +HEADER$
+        +clean_cell(text)$
+        +render()
     }
 
-    Reporter <|-- TextReporter : is-a
-    Reporter <|-- CsvReporter : is-a
+    TextReporter --|> Reporter
+    CsvReporter --|> Reporter
 
     Suite "1" o-- "0..*" TestResult : has-many
-    Reporter "1" --> "1" Suite : has-one
+    Reporter --> Suite : has-one
